@@ -4,7 +4,13 @@ namespace SortCompareLab.Commands
 {
     class RandomCommand : ICommand
     {
-        private readonly Handler _handler;
+        private readonly Handler handler;
+
+        public RandomCommand(Handler handler)
+        {
+            this.handler = handler;
+        }
+
         public string Name => "random";
         public string ShortDescription => "установить случайную последовательность массива";
 
@@ -16,56 +22,39 @@ namespace SortCompareLab.Commands
         public string Usage =>
             "\'random x\', где x (опционально) - количество элементов массива (целое число).";
 
-        public RandomCommand(Handler handler)
-        {
-            _handler = handler;
-        }
-
         public void Execute(params string[] arguments)
         {
-            if (arguments.Length <= 1)
-            {
-                try
-                {
-                    var randomCount = 1000;
-                    if (arguments.Length != 0)
-                    {
-                        randomCount = Convert.ToInt32(arguments[0]);
-                    }
-                    if (randomCount <= 0)
-                    {
-                        Console.WriteLine(
-                            "Ошибка - количество элементов не может быть меньше или равно 0!");
-                    }
-                    else
-                    {
-                        FillRandom(randomCount);
-                        Console.WriteLine(
-                            "Последовательность успешно задана. Количество элементов в массиве: {0}",
-                            randomCount);
-                        return;
-                    }
-                }
-                catch (Exception e)
-                {
-                    switch (e)
-                    {
-                        case OverflowException _:
-                            Console.WriteLine("Ошибка - слишком большое количество элементов!");
-                            break;
-                        case FormatException _:
-                            Console.WriteLine("Ошибка - введенный параметр не является числом!");
-                            break;
-                        default:
-                            throw;
-                    }
-                }
-            }
-            else
+            if (arguments.Length > 1)
             {
                 Console.WriteLine("Ошибка - слишком много аргументов!");
+                return;
             }
-            Console.WriteLine("Попробуйте \"usage random\"");
+            try
+            {
+                var randomCount = 1000;
+                if (arguments.Length != 0)
+                {
+                    randomCount = Convert.ToInt32(arguments[0]);
+                }
+                if (randomCount <= 0)
+                {
+                    Console.WriteLine("Ошибка - количество элементов должно быть больше 0!");
+                }
+                else
+                {
+                    FillRandom(randomCount);
+                    Console.WriteLine("Последовательность задана. Кол-во элементов: {0}",
+                                      randomCount);
+                }
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Ошибка - слишком большое количество элементов!");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка - введенный параметр не является числом!");
+            }
         }
 
         /// <summary>
@@ -75,10 +64,10 @@ namespace SortCompareLab.Commands
         private void FillRandom(int randomCount)
         {
             var random = new Random();
-            _handler.Sequence.Clear();
+            handler.Sequence.Clear();
             for (var i = 0; i < randomCount; i++)
             {
-                _handler.Sequence.Add(random.Next());
+                handler.Sequence.Add(random.Next());
             }
         }
     }

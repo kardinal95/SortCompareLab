@@ -92,10 +92,8 @@ namespace SortCompareLab
             for (var head = size / 2; head >= 0;
                  head--) // Исключаем нижние уровни, начинаем с верхнего
             {
-                var ready = false; // Флаг для избежания излишних циклов
-
                 var sub = head; // Работаем с поддеревом
-                while (sub * 2 + 1 < size && !ready)
+                while (sub * 2 + 1 < size)
                 {
                     // Берем левое поддерево
                     // Если существует правое поддерево больше левого - берем его
@@ -112,7 +110,7 @@ namespace SortCompareLab
                     }
                     else
                     {
-                        ready = true; // Пирамида готова если не было изменений
+                        break; // Пирамида готова если не было изменений
                     }
                 }
             }

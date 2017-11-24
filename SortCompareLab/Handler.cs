@@ -18,20 +18,14 @@ namespace SortCompareLab
         public int Iterations { get; set; } = 100;
         public List<int> Sequence { get; } = new List<int>();
 
-        public Dictionary<string, Action<int[]>> SortMethods { get; } =
-            new Dictionary<string, Action<int[]>>();
-
         /// <summary>
         ///     Инициализирует обработчик
         /// </summary>
         /// <param name="sortMethods">Словарь методов сортировки с которыми работает программа</param>
         public Handler(Dictionary<string, Action<int[]>> sortMethods)
         {
-            foreach (var method in sortMethods)
-            {
-                SortMethods.Add(method.Key, method.Value);
-            }
             AddCommands();
+            Commands.Add(new TestCommand(this, sortMethods));
             FillCommandMap();
         }
 
@@ -105,7 +99,6 @@ namespace SortCompareLab
             Commands.Add(new IterationsCommand(this));
             Commands.Add(new SequenceCommand(this));
             Commands.Add(new RandomCommand(this));
-            Commands.Add(new TestCommand(this));
         }
     }
 }

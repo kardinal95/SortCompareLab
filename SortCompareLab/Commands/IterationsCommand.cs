@@ -4,11 +4,11 @@ namespace SortCompareLab.Commands
 {
     class IterationsCommand : ICommand
     {
-        private readonly Handler _handler;
+        private readonly Handler handler;
 
         public IterationsCommand(Handler handler)
         {
-            _handler = handler;
+            this.handler = handler;
         }
 
         public string Name => "iterations";
@@ -21,44 +21,35 @@ namespace SortCompareLab.Commands
 
         public void Execute(params string[] arguments)
         {
-            if (arguments.Length == 1)
+            if (arguments.Length != 1)
+            {
+                Console.WriteLine("Ошибка - неправильно введены аргументы для функции!");
+            }
+            else
             {
                 try
                 {
                     var result = Convert.ToInt32(arguments[0]);
                     if (result <= 0)
                     {
-                        Console.WriteLine(
-                            "Ошибка - количество итераций не может быть меньше или равно 0!");
+                        Console.WriteLine("Ошибка - количество итераций должно быть больше 0!");
                     }
                     else
                     {
-                        _handler.Iterations = result;
+                        handler.Iterations = result;
                         Console.WriteLine("Установлено количество итераций: {0}",
-                                          _handler.Iterations);
-                        return;
+                                          handler.Iterations);
                     }
                 }
-                catch (Exception e)
+                catch (OverflowException)
                 {
-                    switch (e)
-                    {
-                        case OverflowException _:
-                            Console.WriteLine("Ошибка - слишком большое количество итераций!");
-                            break;
-                        case FormatException _:
-                            Console.WriteLine("Ошибка - введенный параметр не является числом!");
-                            break;
-                        default:
-                            throw; // Обнаружена критическая ошибка
-                    }
+                    Console.WriteLine("Ошибка - слишком большое количество итераций!");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Ошибка - введенный параметр не является числом!");
                 }
             }
-            else
-            {
-                Console.WriteLine("Ошибка - неправильно введены аргументы для функции!");
-            }
-            Console.WriteLine("Попробуйте \"usage iterations\"");
         }
     }
 }

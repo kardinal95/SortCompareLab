@@ -12,7 +12,7 @@ namespace SortCompareLab
                 {"Пузырьковая сортировка", ListSort.BubbleSort},
                 {"Сортировка вставками", ListSort.InsertSort},
                 {"Пирамидальная сортировка", ListSort.HeapSort},
-                {"Встроенные класс", Array.Sort}
+                {"Встроенный класс", Array.Sort}
             };
             var handler = new Handler(sortMethods);
             handler.Run();

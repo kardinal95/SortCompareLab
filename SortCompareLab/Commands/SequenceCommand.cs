@@ -5,7 +5,7 @@ namespace SortCompareLab.Commands
 {
     class SequenceCommand : ICommand
     {
-        private readonly Handler _handler;
+        private readonly Handler handler;
         public string Name => "sequence";
         public string ShortDescription => "установить последовательность массива";
 
@@ -18,44 +18,42 @@ namespace SortCompareLab.Commands
 
         public SequenceCommand(Handler handler)
         {
-            _handler = handler;
+            this.handler = handler;
         }
 
         public void Execute(params string[] arguments)
         {
-            if (arguments.Length != 0)
+            if (arguments.Length == 0)
             {
-                var temp = new List<int>();
-                var errors = new List<string>();
-                foreach (var argument in arguments)
+                Console.WriteLine("Ошибка - недостаточно аргументов!");
+                return;
+            }
+            var temp = new List<int>();
+            var errors = new List<string>();
+            foreach (var argument in arguments)
+            {
+                try
                 {
-                    try
-                    {
-                        temp.Add(Convert.ToInt32(argument));
-                    }
-                    catch (Exception e) when (e is OverflowException || e is FormatException)
-                    {
-                        errors.Add(argument);
-                    }
+                    temp.Add(Convert.ToInt32(argument));
                 }
-                if (errors.Count == 0)
+                catch (Exception e) when (e is OverflowException || e is FormatException)
                 {
-                    _handler.Sequence.Clear();
-                    _handler.Sequence.AddRange(temp);
-                    Console.WriteLine(
-                        "Последовательность успешно установлена. Количество элементов в массиве - {0}",
-                        temp.Count);
-                    return;
+                    errors.Add(argument);
                 }
+            }
+            if (errors.Count == 0)
+            {
+                handler.Sequence.Clear();
+                handler.Sequence.AddRange(temp);
+                Console.WriteLine("Последовательность установлена. Кол-во элементов - {0}",
+                                  temp.Count);
+            }
+            else
+            {
                 Console.Write("Ошибка - невозможно добавить следующие элементы: ");
                 Console.WriteLine(string.Join(" ", errors));
                 Console.WriteLine("Проверьте правильность ввода!");
             }
-            else
-            {
-                Console.WriteLine("Ошибка - недостаточно аргументов!");
-            }
-            Console.WriteLine("Попробуйте \"usage sequence\"");
         }
     }
 }
